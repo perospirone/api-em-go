@@ -4,30 +4,37 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/danitw/api-em-go/conection"
+
 	"gopkg.in/macaron.v1"
 )
 
 type Robo struct {
 	Name string
-	Age int
+	Age  int
+}
+
+type Email struct {
+	Assunto  string `json:"assunto"`
+	Mensagem string `json:"mensagem"`
 }
 
 func main() {
-	m := macaron.Classic()
+	conection.Conection()
+	/*m := macaron.Classic()
 
 	routes(m)
 
-	m.Run()
+	m.Run()*/
 }
 
 func routes(m *macaron.Macaron) {
 	m.Get("/", handler)
 
-	m.Post("/", func() string {
-		return "dani"
-	})
-
 	m.Get("json", jason)
+
+	m.Post("email", getEmail)
+
 }
 
 func handler(ctx *macaron.Context) string {
@@ -44,4 +51,22 @@ func jason(ctx *macaron.Context) []byte {
 	}
 
 	return b
+}
+
+func getEmail(ctx *macaron.Context) []byte {
+	data := ctx.Req.Body()
+
+	var a Email
+
+	d, _ := data.Bytes()
+
+	err := json.Unmarshal(d, &a)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(a.Assunto)
+	fmt.Println(a.Mensagem)
+	return d
 }
