@@ -3,7 +3,8 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
-
+	"github.com/danitw/api-em-go/controllers"
+	"github.com/danitw/api-em-go/database"
 	"gopkg.in/macaron.v1"
 )
 
@@ -17,11 +18,14 @@ type Email struct {
 	Mensagem string `json:"mensagem"`
 }
 
+
+
 func Routes(m *macaron.Macaron) {
 	m.Get("json", jason)
 
 	m.Post("email", getEmail)
 
+	m.Post("register", register)
 }
 
 func jason(ctx *macaron.Context) []byte {
@@ -49,7 +53,20 @@ func getEmail(ctx *macaron.Context) []byte {
 		fmt.Println(err)
 	}
 
-	fmt.Println(a.Assunto)
-	fmt.Println(a.Mensagem)
+	fmt.Println(a)
 	return d
+}
+
+func register(ctx *macaron.Context) string{
+	data := ctx.Req.Body()
+
+	d, _ := data.Bytes()
+
+	bug := controllers.Register(database.Connection(), d)
+
+	if bug == false {
+		return "Deu errado"
+	}
+
+	return "Deu certo"
 }
