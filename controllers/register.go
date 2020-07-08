@@ -10,8 +10,8 @@ import (
 )
 
 type Conta struct {
-	Name string
-	Email string
+	Name     string
+	Email    string
 	Password string
 }
 
@@ -27,7 +27,7 @@ func Register(db *gorm.DB, data []byte) bool {
 		return false
 	}
 
-	a := database.Conta{Name: conta.Name, Password:conta.Password, Email: conta.Email, CreatedAt: time.Now(), UpdatedAt: time.Now()}
+	a := database.Conta{Name: conta.Name, Password: conta.Password, Email: conta.Email, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 
 	db.Create(&a)
 
