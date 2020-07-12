@@ -3,22 +3,21 @@ package routes
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/danitw/api-em-go/controllers"
 	"github.com/danitw/api-em-go/database"
 	"gopkg.in/macaron.v1"
 )
 
-type Robo struct {
+type robo struct {
 	Name string
 	Age  int
 }
 
-type Email struct {
+type email struct {
 	Assunto  string `json:"assunto"`
 	Mensagem string `json:"mensagem"`
 }
-
-
 
 func Routes(m *macaron.Macaron) {
 	m.Get("json", jason)
@@ -26,10 +25,12 @@ func Routes(m *macaron.Macaron) {
 	m.Post("email", getEmail)
 
 	m.Post("register", register)
+
+	m.Post("login", login)
 }
 
 func jason(ctx *macaron.Context) []byte {
-	robo := &Robo{Name: "Dani", Age: 15}
+	robo := &robo{Name: "Dani", Age: 15}
 
 	b, err := json.Marshal(robo)
 	if err != nil {
@@ -43,7 +44,7 @@ func jason(ctx *macaron.Context) []byte {
 func getEmail(ctx *macaron.Context) []byte {
 	data := ctx.Req.Body()
 
-	var a Email
+	var a email
 
 	d, _ := data.Bytes()
 
@@ -57,7 +58,7 @@ func getEmail(ctx *macaron.Context) []byte {
 	return d
 }
 
-func register(ctx *macaron.Context) string{
+func register(ctx *macaron.Context) string {
 	data := ctx.Req.Body()
 
 	d, _ := data.Bytes()
@@ -69,4 +70,14 @@ func register(ctx *macaron.Context) string{
 	}
 
 	return "Deu certo"
+}
+
+func login(ctx *macaron.Context) string {
+	data := ctx.Req.Body()
+
+	d, _ := data.Bytes()
+
+	controllers.Login(database.Connection(), d)
+
+	return "da"
 }
